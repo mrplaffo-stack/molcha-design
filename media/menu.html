@@ -121,38 +121,40 @@ body.inv .card { --flip: 180deg; }
   </div>
 
   <div class="row">
-    <p class="side" id="side">side A — bar</p>
+    <p class="side" id="side">side A — bar</p><script>if(/[?&]lang=ru/.test(location.search))document.getElementById("side").textContent="сторона A — бар"</script>
     <p id="how">click the menu to flip · click the sheet to pull it out</p>
   </div>
 </div>
 
 <script>
+const RU=/[?&]lang=ru/.test(location.search),DD={"side A — bar": "сторона A — бар", "side B — kitchen": "сторона B — кухня", "insert — <b>infusions 170₽</b>": "вкладыш — <b>настойки 170₽</b>", "Pull out the infusions sheet": "Вытащить лист с настойками", "Tuck the infusions sheet back": "Убрать лист с настойками", "Flip the menu": "Перевернуть меню"},t=x=>RU&&DD[x]||x;
+if(RU){document.documentElement.lang="ru";document.title="Меню «Свобода»";document.querySelector(".card").setAttribute("aria-label",DD["Flip the menu"]);var RUI_=1}
 const card = document.getElementById("card");
 const slip = document.getElementById("slip");
 const side = document.getElementById("side");
 const how = document.getElementById("how");
 const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
-const verb = fine ? "click" : "tap";
+const verb = RU ? (fine ? "кликни" : "нажми") : (fine ? "click" : "tap");
 let out = false;
 
 function hint() {
   how.textContent = out
-    ? `${verb} the sheet to tuck it back`
-    : `${verb} the menu to flip · ${verb} the sheet to pull it out`;
+    ? (RU?`${verb} на лист, чтобы убрать`:`${verb} the sheet to tuck it back`)
+    : (RU?`${verb} на меню, чтобы перевернуть · ${verb} на лист, чтобы вытащить`:`${verb} the menu to flip · ${verb} the sheet to pull it out`);
 }
 hint();
 
 function setSide(inv) {
   document.body.classList.toggle("inv", inv);
-  side.innerHTML = inv ? "side B — kitchen" : "side A — bar";
+  side.innerHTML = t(inv ? "side B — kitchen" : "side A — bar");
 }
 function setSlip(v) {
   out = v;
   slip.classList.remove("out", "back");
   void slip.offsetWidth;
   slip.classList.add(v ? "out" : "back");
-  slip.setAttribute("aria-label", v ? "Tuck the infusions sheet back" : "Pull out the infusions sheet");
-  side.innerHTML = v ? "insert — <b>infusions 170₽</b>" : (document.body.classList.contains("inv") ? "side B — kitchen" : "side A — bar");
+  slip.setAttribute("aria-label", t(v ? "Tuck the infusions sheet back" : "Pull out the infusions sheet"));
+  side.innerHTML = t(v ? "insert — <b>infusions 170₽</b>" : (document.body.classList.contains("inv") ? "side B — kitchen" : "side A — bar"));
   hint();
 }
 

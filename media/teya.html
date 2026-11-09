@@ -83,20 +83,22 @@ body.inv .card { --flip: 180deg; }
   </div>
 
   <div class="row">
-    <p class="side" id="side">side A — drawing</p>
+    <p class="side" id="side">side A — drawing</p><script>if(/[?&]lang=ru/.test(location.search))document.getElementById("side").textContent="сторона A — рисунок"</script>
     <p id="how">click to flip</p>
   </div>
 </div>
 
 <script>
+const RU=/[?&]lang=ru/.test(location.search),DD={"side A — drawing": "сторона A — рисунок", "side B — about him": "сторона B — о нём", "click to flip": "кликни, чтобы перевернуть", "tap to flip": "нажми, чтобы перевернуть", "Flip the card": "Перевернуть карточку"},t=x=>RU&&DD[x]||x;
+if(RU){document.documentElement.lang="ru";document.title="Teya — карточка";document.querySelector(".card").setAttribute("aria-label",DD["Flip the card"]);var RUI_=1}
 const card = document.getElementById("card");
 const side = document.getElementById("side");
 const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
-document.getElementById("how").textContent = fine ? "click to flip" : "tap to flip";
+document.getElementById("how").textContent = t(fine ? "click to flip" : "tap to flip");
 
 function set(inv) {
   document.body.classList.toggle("inv", inv);
-  side.textContent = inv ? "side B — about him" : "side A — drawing";
+  side.textContent = t(inv ? "side B — about him" : "side A — drawing");
 }
 
 if (fine) {
